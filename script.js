@@ -6,6 +6,7 @@ import { getDatabase, ref, set, push } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyDWuTAtwzOl0fw55dEJ-8uzstvrvewuQq0",
   authDomain: "base-de-datos-dune.firebaseapp.com",
+  databaseURL: "https://base-de-datos-dune-default-rtdb.firebaseio.com", // Asegúrate de incluir esta línea
   projectId: "base-de-datos-dune",
   storageBucket: "base-de-datos-dune.appspot.com",
   messagingSenderId: "806858398195",
