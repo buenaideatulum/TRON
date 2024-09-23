@@ -1,33 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Desierto de Mensajes</title>
-  <link rel="stylesheet" href="styles.css">
-  <!-- Importar Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardar Mensajes</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #E5E5E5;
+        }
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        #modalContent {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
 
-  <div id="desierto">
-    <button id="openModalButton">Dejar un Mensaje</button>
-  </div>
+    <button id="openModalButton">Agregar Mensaje</button>
 
-  <!-- Modal para escribir mensaje -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span id="closeModal" class="close">X</span>
-      <h2>Mensaje?</h2>
-      <textarea id="mensaje" maxlength="50" placeholder="Escribe tu mensaje..."></textarea>
-      <button id="guardarMensaje">Guardar</button>
+    <div id="modal">
+        <div id="modalContent">
+            <h2>Escribe tu mensaje</h2>
+            <textarea id="mensaje" rows="4" cols="30"></textarea><br>
+            <button id="guardarMensaje">Enviar</button>
+            <button id="closeModal">Cancelar</button>
+            <p id="success-message" style="display:none; color: green;">¡Mensaje guardado!</p>
+        </div>
     </div>
-  </div>
 
-  <!-- Mensaje de éxito -->
-  <div id="success-message" style="display:none;">Mensaje guardado exitosamente!</div>
+    <script>
+        // Tu configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_AUTH_DOMAIN",
+            databaseURL: "TU_DATABASE_URL",
+            projectId: "TU_PROJECT_ID",
+            storageBucket: "TU_STORAGE_BUCKET",
+            messagingSenderId: "TU_MESSAGING_SENDER_ID",
+            appId: "TU_APP_ID",
+        };
 
-  <script src="script.js" defer></script> <!-- Tu archivo JavaScript -->
+        // Inicializar Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Obtener referencias a los elementos del DOM
+        const openModalButton = document.getElementById('openModalButton');
+        const modal = document.getElementById('modal');
+        const closeModal = document.getElementById('closeModal');
+        const guardarMensaje = document.getElementById('guardarMensaje');
+        const successMessage = document.getElementById('success-message');
+
+        // Mostrar el modal al hacer clic en el botón
+        openModalButton.addEventListener('click', function() {
+            modal.style.display = 'flex';
+        });
+
+        // Cerrar el modal al hacer clic en el botón de cerrar
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // Guardar el mensaje en Firebase
+        guardarMensaje.addEventListener('click', function() {
+            const mensaje = document.getElementById('mensaje').value;
+            if (mensaje.length > 0) {
+                const mensajeId = firebase.database().ref('mensajes').push().key; // Generar un ID único
+                firebase.database().ref('mensajes/' + mensajeId).set({
+                    mensaje: mensaje
+                }).then(() => {
+                    showSuccessMessage();
+                    modal.style.display = 'none';
+                    document.getElementById('mensaje').value = ''; // Limpiar el textarea
+                }).catch((error) => {
+                    alert('Error al guardar el mensaje: ' + error);
+                });
+            } else {
+                alert('Por favor escribe un mensaje');
+            }
+        });
+
+        // Mostrar mensaje de éxito
+        function showSuccessMessage() {
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
