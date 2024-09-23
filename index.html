@@ -11,10 +11,11 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: white;
+            background-color: black;
             position: relative;
             overflow: hidden; /* Para evitar scroll */
         }
+
         #modal {
             display: none;
             position: fixed;
@@ -26,12 +27,14 @@
             justify-content: center;
             align-items: center;
         }
+
         #modalContent {
             background: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
+
         .firefly {
             width: 10px;
             height: 10px;
@@ -40,6 +43,38 @@
             position: absolute;
             transition: transform 0.5s ease-in-out;
             cursor: pointer; /* Para indicar que es interactivo */
+        }
+
+        /* Estilos de las alas */
+        .wing {
+            width: 10px;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            position: absolute;
+            border-radius: 50%;
+            animation: flap 0.1s infinite alternate ease-in-out;
+            top: 0; /* Alinear las alas verticalmente */
+          opacity: 0.6; /* Añadir transparencia a las alas */
+        }
+
+        .wing-left {
+            left: -4px; /* Coloca la ala izquierda al lado izquierdo del cuerpo */
+            transform-origin: right center; /* Origen de rotación para simular aleteo */
+        }
+
+        .wing-right {
+            right: -4px; /* Coloca la ala derecha al lado derecho del cuerpo */
+            transform-origin: left center; /* Origen de rotación para simular aleteo */
+        }
+
+        /* Animación del aleteo */
+        @keyframes flap {
+            from {
+                transform: translateY(-1px); /* Mueve hacia arriba */
+            }
+            to {
+                transform: translateY(1px); /* Mueve hacia abajo */
+            }
         }
     </style>
 </head>
@@ -131,8 +166,20 @@
         function crearLuciernaga(mensaje) {
             const firefly = document.createElement('div');
             firefly.className = 'firefly';
-            firefly.style.top = `${Math.random() * 100}vh`;
-            firefly.style.left = '0'; // Comenzar en la izquierda
+
+            // Generar posición aleatoria para la luciérnaga
+            firefly.style.top = `${Math.random() * 100}vh`;  // Posición aleatoria en el eje vertical
+            firefly.style.left = `${Math.random() * 1000}vw`; // Posición aleatoria en el eje horizontal
+
+            // Crear las alas
+            const wingLeft = document.createElement('div');
+            wingLeft.classList.add('wing', 'wing-left');
+            const wingRight = document.createElement('div');
+            wingRight.classList.add('wing', 'wing-right');
+            
+            // Agregar alas al cuerpo
+            firefly.appendChild(wingLeft);
+            firefly.appendChild(wingRight);
 
             document.body.appendChild(firefly);
             moverLuciernaga(firefly, mensaje);
@@ -151,6 +198,18 @@
                 if (posX > window.innerWidth - 20 || posX < 0) {
                     direction *= -1; // Cambiar dirección
                 }
+
+                // Cambiar la posición de las alas según la dirección
+                const wings = firefly.querySelectorAll('.wing');
+                wings.forEach(wing => {
+                    if (direction === 1) {
+                        wing.classList.add('wing-left');
+                        wing.classList.remove('wing-right');
+                    } else {
+                        wing.classList.add('wing-right');
+                        wing.classList.remove('wing-left');
+                    }
+                });
             }, 50);
 
             firefly.addEventListener('click', () => {
