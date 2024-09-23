@@ -12,7 +12,8 @@
             align-items: center;
             height: 100vh;
             background-color: white;
-            position: relative; /* Para posicionar las luciérnagas */
+            position: relative;
+            overflow: hidden; /* Para evitar scroll */
         }
         #modal {
             display: none;
@@ -37,7 +38,7 @@
             background-color: yellow;
             border-radius: 50%;
             position: absolute;
-            transition: transform 0.2s;
+            transition: transform 0.5s ease-in-out;
             cursor: pointer; /* Para indicar que es interactivo */
         }
     </style>
@@ -131,11 +132,30 @@
             const firefly = document.createElement('div');
             firefly.className = 'firefly';
             firefly.style.top = `${Math.random() * 100}vh`;
-            firefly.style.left = `${Math.random() * 100}vw`;
+            firefly.style.left = '0'; // Comenzar en la izquierda
+
+            document.body.appendChild(firefly);
+            moverLuciernaga(firefly, mensaje);
+        }
+
+        function moverLuciernaga(firefly, mensaje) {
+            let direction = 1; // 1: derecha, -1: izquierda
+            let posX = parseFloat(firefly.style.left);
+
+            setInterval(() => {
+                posX += 2 * direction; // Mover a la derecha o izquierda
+                firefly.style.left = `${posX}px`;
+                firefly.style.transform = `translateY(${Math.sin(posX / 100) * 20}px)`; // Movimiento vertical
+
+                // Cambiar dirección si llega al borde
+                if (posX > window.innerWidth - 20 || posX < 0) {
+                    direction *= -1; // Cambiar dirección
+                }
+            }, 50);
+
             firefly.addEventListener('click', () => {
                 alert(mensaje);
             });
-            document.body.appendChild(firefly);
         }
 
         // Cargar luciérnagas al iniciar
