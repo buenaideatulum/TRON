@@ -48,8 +48,12 @@
         }
 
         textarea {
-            width: 100%; /* Ajusta el área de texto al ancho del modal */
+            width: 90%; /* Ajusta el área de texto al 90% del contenedor */
+            max-width: 100%; /* Limita el tamaño máximo al 100% del contenedor */
             resize: none; /* Evita que se redimensione */
+            padding: 10px; /* Agrega un poco de espacio interno */
+            border: 1px solid #ccc; /* Agrega un borde para mejor visualización */
+            border-radius: 5px; /* Esquinas redondeadas */
         }
 
         .firefly {
@@ -161,6 +165,8 @@
                     }, 3000);
                     modal.style.display = 'none';
                     document.getElementById('mensaje').value = '';
+                    
+                    crearLuciernaga(mensaje);
                 } catch (error) {
                     alert('Error al guardar el mensaje: ' + error.message);
                 }
@@ -180,7 +186,7 @@
             const firefly = document.createElement('div');
             firefly.className = 'firefly';
             firefly.style.top = `${Math.random() * 100}vh`;  
-            firefly.style.left = `${Math.random() * 1000}vw`; 
+            firefly.style.left = `${Math.random() * 100}vw`; // Cambiado de 1000vw a 100vw
 
             const wingLeft = document.createElement('div');
             wingLeft.classList.add('wing', 'wing-left');
