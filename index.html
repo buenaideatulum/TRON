@@ -11,7 +11,8 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #E5E5E5;
+            background-color: white;
+            position: relative; /* Para posicionar las luciérnagas */
         }
         #modal {
             display: none;
@@ -25,15 +26,25 @@
             align-items: center;
         }
         #modalContent {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             padding: 20px;
-            border-radius: 5px;
+            border-radius: 10px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .firefly {
+            width: 10px;
+            height: 10px;
+            background-color: yellow;
+            border-radius: 50%;
+            position: absolute;
+            transition: transform 0.2s;
+            cursor: pointer; /* Para indicar que es interactivo */
         }
     </style>
 </head>
 <body>
 
-    <button id="openModalButton">Agregar Mensaje</button>
+    <button id="openModalButton" style="display: none;">Agregar Mensaje</button>
 
     <div id="modal">
         <div id="modalContent">
@@ -46,12 +57,9 @@
     </div>
 
     <script type="module">
-        // Importar funciones de Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
-        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDWuTAtwzOl0fw55dEJ-8uzstvrvewuQq0",
             authDomain: "base-de-datos-dune.firebaseapp.com",
@@ -62,34 +70,37 @@
             measurementId: "G-BW5S5G4ZFQ"
         };
 
-        // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = getFirestore(app); // Inicializar Firestore
+        const db = getFirestore(app);
 
-        // Obtener referencias a los elementos del DOM
-        const openModalButton = document.getElementById('openModalButton');
         const modal = document.getElementById('modal');
         const closeModal = document.getElementById('closeModal');
         const guardarMensaje = document.getElementById('guardarMensaje');
         const successMessage = document.getElementById('success-message');
+        const openModalButton = document.getElementById('openModalButton');
 
-        // Mostrar el modal al hacer clic en el botón
-        openModalButton.addEventListener('click', function() {
-            modal.style.display = 'flex';
+        // Mostrar el modal al hacer clic en la pantalla
+        document.body.addEventListener('click', function(event) {
+            if (event.target !== openModalButton) {
+                openModalButton.style.display = 'block';
+                openModalButton.style.position = 'absolute';
+                openModalButton.style.top = `${event.clientY}px`;
+                openModalButton.style.left = `${event.clientX}px`;
+                openModalButton.onclick = function() {
+                    modal.style.display = 'flex';
+                    openModalButton.style.display = 'none'; // Ocultar el botón al abrir el modal
+                }
+            }
         });
 
-        // Cerrar el modal al hacer clic en el botón de cerrar
         closeModal.addEventListener('click', function() {
             modal.style.display = 'none';
         });
 
-        // Guardar el mensaje en Firestore y mostrar mensaje de éxito
         guardarMensaje.addEventListener('click', async function() {
             const mensaje = document.getElementById('mensaje').value;
             if (mensaje.length > 0) {
                 try {
-                    // Guardar el mensaje en Firestore
                     await addDoc(collection(db, 'mensajes'), {
                         texto: mensaje,
                         fecha: new Date().toISOString()
@@ -100,6 +111,7 @@
                     }, 3000);
                     modal.style.display = 'none';
                     document.getElementById('mensaje').value = '';
+                    crearLuciernaga(mensaje);
                 } catch (error) {
                     alert('Error al guardar el mensaje: ' + error.message);
                 }
@@ -107,6 +119,27 @@
                 alert('Por favor escribe un mensaje');
             }
         });
+
+        async function cargarLuciernagas() {
+            const querySnapshot = await getDocs(collection(db, 'mensajes'));
+            querySnapshot.forEach((doc) => {
+                crearLuciernaga(doc.data().texto);
+            });
+        }
+
+        function crearLuciernaga(mensaje) {
+            const firefly = document.createElement('div');
+            firefly.className = 'firefly';
+            firefly.style.top = `${Math.random() * 100}vh`;
+            firefly.style.left = `${Math.random() * 100}vw`;
+            firefly.addEventListener('click', () => {
+                alert(mensaje);
+            });
+            document.body.appendChild(firefly);
+        }
+
+        // Cargar luciérnagas al iniciar
+        cargarLuciernagas();
     </script>
 </body>
 </html>
