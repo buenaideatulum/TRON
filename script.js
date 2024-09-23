@@ -1,9 +1,8 @@
-// Import the functions you need from the SDKs you need
+// Importar las funciones necesarias de Firebase
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getDatabase, ref, set, push } from "firebase/database";
 
-// Your web app's Firebase configuration
+// Tu configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDWuTAtwzOl0fw55dEJ-8uzstvrvewuQq0",
   authDomain: "base-de-datos-dune.firebaseapp.com",
@@ -11,44 +10,41 @@ const firebaseConfig = {
   storageBucket: "base-de-datos-dune.appspot.com",
   messagingSenderId: "806858398195",
   appId: "1:806858398195:web:81f2a986d716b95e1d9a86",
-  measurementId: "G-BW5S5G4ZFQ"
 };
 
-// Initialize Firebase
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-// Initialize Realtime Database
 const database = getDatabase(app);
 
-// Get references to DOM elements
+// Obtener referencias a los elementos del DOM
 const openModalButton = document.getElementById('openModalButton');
 const modal = document.getElementById('modal');
 const closeModal = document.getElementById('closeModal');
 const guardarMensaje = document.getElementById('guardarMensaje');
 const successMessage = document.getElementById('success-message');
 
-// Show modal when clicking on the button
+// Mostrar el modal al hacer clic en el botón
 openModalButton.addEventListener('click', function() {
+    console.log("Botón presionado");
     modal.style.display = 'block';
 });
 
-// Close modal when clicking on close button
+// Cerrar el modal al hacer clic en el botón de cerrar
 closeModal.addEventListener('click', function() {
     modal.style.display = 'none';
 });
 
-// Save message to Firebase
+// Guardar el mensaje en Firebase
 guardarMensaje.addEventListener('click', function() {
     const mensaje = document.getElementById('mensaje').value;
     if (mensaje.length > 0) {
-        const mensajeId = push(ref(database, 'mensajes')).key; // Generate unique ID for each message
+        const mensajeId = push(ref(database, 'mensajes')).key; // Generar un ID único para cada mensaje
         set(ref(database, 'mensajes/' + mensajeId), {
             mensaje: mensaje
         }).then(() => {
             showSuccessMessage();
             modal.style.display = 'none';
-            document.getElementById('mensaje').value = ''; // Clear the textarea
+            document.getElementById('mensaje').value = ''; // Limpiar el textarea
         }).catch((error) => {
             alert('Error al guardar el mensaje: ' + error);
         });
@@ -57,10 +53,10 @@ guardarMensaje.addEventListener('click', function() {
     }
 });
 
-// Show success message for 3 seconds
+// Mostrar mensaje de éxito durante 3 segundos
 function showSuccessMessage() {
     successMessage.style.display = 'block';
     setTimeout(() => {
         successMessage.style.display = 'none';
-    }, 2000);
+    }, 3000);
 }
