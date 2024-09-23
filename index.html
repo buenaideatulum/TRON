@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Desierto de Mensajes</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- Importar Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
 </head>
 <body>
 
@@ -23,7 +26,7 @@
   </div>
 
   <!-- Mensaje de éxito -->
-  <div id="success-message">Mensaje guardado exitosamente!</div>
+  <div id="success-message" style="display:none;">Mensaje guardado exitosamente!</div>
 
   <script src="script.js" defer></script> <!-- Tu archivo JavaScript -->
 </body>
