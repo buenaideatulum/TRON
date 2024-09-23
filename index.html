@@ -6,15 +6,26 @@
     <title>Guardar Mensajes</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: black;
-            position: relative;
-            overflow: hidden; /* Para evitar scroll */
-        }
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: black;
+    position: relative;
+    overflow: hidden; /* Para evitar scroll */
+    animation: cambiarFondo 50s infinite alternate; /* Animación para cambiar el fondo */
+}
+
+@keyframes cambiarFondo {
+    0% {
+        background-color: #d3d3d3; /* Gris claro */
+    }
+    100% {
+        background-color: black; /* Negro */
+    }
+}
+
 
         #modal {
             display: none;
