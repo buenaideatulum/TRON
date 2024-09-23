@@ -6,26 +6,25 @@
     <title>Atrapa la luciérnaga</title>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: black;
-    position: relative;
-    overflow: hidden; /* Para evitar scroll */
-    animation: cambiarFondo 50s infinite alternate; /* Animación para cambiar el fondo */
-}
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            position: relative;
+            overflow: hidden; 
+            animation: cambiarFondo 50s infinite alternate; 
+        }
 
-@keyframes cambiarFondo {
-    0% {
-        background-color: #bfbcbc; /* Gris claro */
-    }
-    100% {
-        background-color: black; /* Negro */
-    }
-}
-
+        @keyframes cambiarFondo {
+            0% {
+                background-color: #bfbcbc; 
+            }
+            100% {
+                background-color: black; 
+            }
+        }
 
         #modal {
             display: none;
@@ -44,6 +43,13 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            max-width: 90%; /* Asegura que no exceda el 90% del ancho de la pantalla */
+            width: 300px; /* Ancho fijo para pantallas grandes */
+        }
+
+        textarea {
+            width: 100%; /* Ajusta el área de texto al ancho del modal */
+            resize: none; /* Evita que se redimensione */
         }
 
         .firefly {
@@ -53,10 +59,9 @@
             border-radius: 50%;
             position: absolute;
             transition: transform 0.5s ease-in-out;
-            cursor: pointer; /* Para indicar que es interactivo */
+            cursor: pointer; 
         }
 
-        /* Estilos de las alas */
         .wing {
             width: 10px;
             height: 5px;
@@ -64,27 +69,26 @@
             position: absolute;
             border-radius: 50%;
             animation: flap 0.1s infinite alternate ease-in-out;
-            top: 0; /* Alinear las alas verticalmente */
-          opacity: 0.6; /* Añadir transparencia a las alas */
+            top: 0; 
+            opacity: 0.6; 
         }
 
         .wing-left {
-            left: -4px; /* Coloca la ala izquierda al lado izquierdo del cuerpo */
-            transform-origin: right center; /* Origen de rotación para simular aleteo */
+            left: -4px; 
+            transform-origin: right center; 
         }
 
         .wing-right {
-            right: -4px; /* Coloca la ala derecha al lado derecho del cuerpo */
-            transform-origin: left center; /* Origen de rotación para simular aleteo */
+            right: -4px; 
+            transform-origin: left center; 
         }
 
-        /* Animación del aleteo */
         @keyframes flap {
             from {
-                transform: translateY(-1px); /* Mueve hacia arriba */
+                transform: translateY(-1px); 
             }
             to {
-                transform: translateY(1px); /* Mueve hacia abajo */
+                transform: translateY(1px); 
             }
         }
     </style>
@@ -96,7 +100,7 @@
     <div id="modal">
         <div id="modalContent">
             <h2>Escribe tu mensaje</h2>
-            <textarea id="mensaje" rows="4" cols="30"></textarea><br>
+            <textarea id="mensaje" rows="4"></textarea><br>
             <button id="guardarMensaje">Enviar</button>
             <button id="closeModal">Cancelar</button>
             <p id="success-message" style="display:none; color: green;">¡Mensaje guardado!</p>
@@ -126,7 +130,6 @@
         const successMessage = document.getElementById('success-message');
         const openModalButton = document.getElementById('openModalButton');
 
-        // Mostrar el modal al hacer clic en la pantalla
         document.body.addEventListener('click', function(event) {
             if (event.target !== openModalButton) {
                 openModalButton.style.display = 'block';
@@ -135,7 +138,7 @@
                 openModalButton.style.left = `${event.clientX}px`;
                 openModalButton.onclick = function() {
                     modal.style.display = 'flex';
-                    openModalButton.style.display = 'none'; // Ocultar el botón al abrir el modal
+                    openModalButton.style.display = 'none'; 
                 }
             }
         });
@@ -158,7 +161,6 @@
                     }, 3000);
                     modal.style.display = 'none';
                     document.getElementById('mensaje').value = '';
-                    crearLuciernaga(mensaje);
                 } catch (error) {
                     alert('Error al guardar el mensaje: ' + error.message);
                 }
@@ -177,40 +179,33 @@
         function crearLuciernaga(mensaje) {
             const firefly = document.createElement('div');
             firefly.className = 'firefly';
+            firefly.style.top = `${Math.random() * 100}vh`;  
+            firefly.style.left = `${Math.random() * 1000}vw`; 
 
-            // Generar posición aleatoria para la luciérnaga
-            firefly.style.top = `${Math.random() * 100}vh`;  // Posición aleatoria en el eje vertical
-            firefly.style.left = `${Math.random() * 1000}vw`; // Posición aleatoria en el eje horizontal
-
-            // Crear las alas
             const wingLeft = document.createElement('div');
             wingLeft.classList.add('wing', 'wing-left');
             const wingRight = document.createElement('div');
             wingRight.classList.add('wing', 'wing-right');
             
-            // Agregar alas al cuerpo
             firefly.appendChild(wingLeft);
             firefly.appendChild(wingRight);
-
             document.body.appendChild(firefly);
             moverLuciernaga(firefly, mensaje);
         }
 
         function moverLuciernaga(firefly, mensaje) {
-            let direction = 1; // 1: derecha, -1: izquierda
+            let direction = 1; 
             let posX = parseFloat(firefly.style.left);
 
             setInterval(() => {
-                posX += 2 * direction; // Mover a la derecha o izquierda
+                posX += 2 * direction; 
                 firefly.style.left = `${posX}px`;
-                firefly.style.transform = `translateY(${Math.sin(posX / 100) * 20}px)`; // Movimiento vertical
+                firefly.style.transform = `translateY(${Math.sin(posX / 100) * 20}px)`; 
 
-                // Cambiar dirección si llega al borde
                 if (posX > window.innerWidth - 20 || posX < 0) {
-                    direction *= -1; // Cambiar dirección
+                    direction *= -1; 
                 }
 
-                // Cambiar la posición de las alas según la dirección
                 const wings = firefly.querySelectorAll('.wing');
                 wings.forEach(wing => {
                     if (direction === 1) {
@@ -228,7 +223,6 @@
             });
         }
 
-        // Cargar luciérnagas al iniciar
         cargarLuciernagas();
     </script>
 </body>
