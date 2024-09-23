@@ -1,20 +1,30 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego Sencillo tipo Worldbox</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desierto de Mensajes</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="game-area"></div>
-    <div class="boton-container">
-        <button id="botonVerde" class="boton boton-verde">Aldeano Verde</button>
-        <button id="botonRojo" class="boton boton-rojo">Aldeano Rojo</button>
-        <button id="botonComida" class="boton boton-amarillo">Comida</button>
-        <button id="botonAgua" class="boton boton-azul">Agua</button>
-        <button id="botonPiedra" class="boton boton-gris">Piedra</button>
+
+  <div id="desierto">
+    <button id="openModalButton">Dejar un Mensaje</button>
+  </div>
+
+  <!-- Modal para escribir mensaje -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">X</span>
+      <h2>Mensaje?</h2>
+      <textarea id="mensaje" maxlength="50" placeholder="Escribe tu mensaje..."></textarea>
+      <button id="guardarMensaje">Guardar</button>
     </div>
-    <script src="script.js"></script>
+  </div>
+
+  <!-- Mensaje de éxito -->
+  <div id="success-message">Mensaje guardado exitosamente!</div>
+
+  <script src="script.js" defer></script> <!-- Tu archivo JavaScript -->
 </body>
 </html>
