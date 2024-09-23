@@ -1,1 +1,8 @@
-
+.firefly {
+    width: 10px;
+    height: 10px;
+    background-color: yellow;
+    border-radius: 50%;
+    position: absolute;
+    transition: transform 0.2s;
+}
