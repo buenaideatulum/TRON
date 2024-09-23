@@ -1,164 +1,66 @@
-const gameArea = document.querySelector('.game-area');
-const aldeanos = [];
-let tipoElemento = null;
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getDatabase, ref, set, push } from "firebase/database";
 
-document.getElementById('botonVerde').addEventListener('click', () => {
-    tipoElemento = 'aldeano-verde';
-    crearAldeano('green');
-});
-document.getElementById('botonRojo').addEventListener('click', () => {
-    tipoElemento = 'aldeano-rojo';
-    crearAldeano('red');
-});
-document.getElementById('botonComida').addEventListener('click', () => {
-    tipoElemento = 'comida';
-});
-document.getElementById('botonAgua').addEventListener('click', () => {
-    tipoElemento = 'agua';
-});
-document.getElementById('botonPiedra').addEventListener('click', () => {
-    tipoElemento = 'piedra';
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDWuTAtwzOl0fw55dEJ-8uzstvrvewuQq0",
+  authDomain: "base-de-datos-dune.firebaseapp.com",
+  projectId: "base-de-datos-dune",
+  storageBucket: "base-de-datos-dune.appspot.com",
+  messagingSenderId: "806858398195",
+  appId: "1:806858398195:web:81f2a986d716b95e1d9a86",
+  measurementId: "G-BW5S5G4ZFQ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+// Initialize Realtime Database
+const database = getDatabase(app);
+
+// Get references to DOM elements
+const openModalButton = document.getElementById('openModalButton');
+const modal = document.getElementById('modal');
+const closeModal = document.getElementById('closeModal');
+const guardarMensaje = document.getElementById('guardarMensaje');
+const successMessage = document.getElementById('success-message');
+
+// Show modal when clicking on the button
+openModalButton.addEventListener('click', function() {
+    modal.style.display = 'block';
 });
 
-// Agregar evento de clic en la zona de juego
-gameArea.addEventListener('click', (e) => {
-    if (tipoElemento) {
-        if (tipoElemento === 'aldeano-verde') {
-            crearAldeano('green', e);
-        } else if (tipoElemento === 'aldeano-rojo') {
-            crearAldeano('red', e);
-        } else if (tipoElemento === 'comida') {
-            crearElemento('comida', e);
-        } else if (tipoElemento === 'agua') {
-            crearElemento('agua', e);
-        } else if (tipoElemento === 'piedra') {
-            crearElemento('piedra', e);
-        }
-        // Reiniciar tipoElemento
-        tipoElemento = null;
+// Close modal when clicking on close button
+closeModal.addEventListener('click', function() {
+    modal.style.display = 'none';
+});
+
+// Save message to Firebase
+guardarMensaje.addEventListener('click', function() {
+    const mensaje = document.getElementById('mensaje').value;
+    if (mensaje.length > 0) {
+        const mensajeId = push(ref(database, 'mensajes')).key; // Generate unique ID for each message
+        set(ref(database, 'mensajes/' + mensajeId), {
+            mensaje: mensaje
+        }).then(() => {
+            showSuccessMessage();
+            modal.style.display = 'none';
+            document.getElementById('mensaje').value = ''; // Clear the textarea
+        }).catch((error) => {
+            alert('Error al guardar el mensaje: ' + error);
+        });
+    } else {
+        alert('Por favor escribe un mensaje');
     }
 });
 
-function crearAldeano(color, e) {
-    const x = e.clientX - 15; // Ajustar para centrar
-    const y = e.clientY - 15; // Ajustar para centrar
-    const aldeano = document.createElement('div');
-    aldeano.classList.add('aldeano');
-    aldeano.style.backgroundColor = color;
-    aldeano.style.left = `${x}px`;
-    aldeano.style.top = `${y}px`;
-
-    // Inicializar las necesidades
-    aldeano.necesidades = {
-        amor: 10,
-        hambre: 10,
-        sed: 10,
-        guerra: 0,
-        vida: 10
-    };
-
-    // Crear contenedor de necesidades
-    const contenedorNecesidades = document.createElement('div');
-    contenedorNecesidades.classList.add('necesidades');
-
-    // Crear barras para cada necesidad
-    Object.keys(aldeano.necesidades).forEach((key) => {
-        const barra = document.createElement('div');
-        barra.classList.add('barra', key);
-        barra.style.width = `${(aldeano.necesidades[key] / 20) * 100}%`;
-        contenedorNecesidades.appendChild(barra);
-    });
-
-    contenedorNecesidades.classList.add('necesidades');
-    aldeano.appendChild(contenedorNecesidades);
-    gameArea.appendChild(aldeano);
-    aldeanos.push(aldeano);
-
-    moverAldeano(aldeano);
-}
-
-function crearElemento(tipo, e) {
-    const x = e.clientX - 15; // Ajustar para centrar
-    const y = e.clientY - 30; // Ajustar para centrar
-    const elemento = document.createElement('div');
-    elemento.classList.add('triangulo', tipo);
-    elemento.style.left = `${x}px`;
-    elemento.style.top = `${y}px`;
-    gameArea.appendChild(elemento);
-}
-
-function moverAldeano(aldeano) {
-    setInterval(() => {
-        gestionarNecesidades(aldeano);
-        const randomDirection = Math.floor(Math.random() * 4);
-        const movement = Math.floor(Math.random() * 6) + 5; // Mover entre 5 y 10 píxeles
-
-        switch (randomDirection) {
-            case 0: // Arriba
-                aldeano.style.top = `${Math.max(0, aldeano.offsetTop - movement)}px`;
-                break;
-            case 1: // Abajo
-                aldeano.style.top = `${Math.min(gameArea.clientHeight - 30, aldeano.offsetTop + movement)}px`;
-                break;
-            case 2: // Izquierda
-                aldeano.style.left = `${Math.max(0, aldeano.offsetLeft - movement)}px`;
-                break;
-            case 3: // Derecha
-                aldeano.style.left = `${Math.min(gameArea.clientWidth - 30, aldeano.offsetLeft + movement)}px`;
-                break;
-        }
-    }, 1000);
-}
-
-function gestionarNecesidades(aldeano) {
-    // Resta 1 punto a cada necesidad cada 4 segundos
-    setInterval(() => {
-        Object.keys(aldeano.necesidades).forEach((key) => {
-            aldeano.necesidades[key] = Math.max(0, aldeano.necesidades[key] - 1);
-        });
-
-        // Actualizar las barras de progreso
-        const barras = aldeano.querySelectorAll('.barra');
-        barras.forEach((barra, index) => {
-            const key = Object.keys(aldeano.necesidades)[index];
-            barra.style.width = `${(aldeano.necesidades[key] / 10) * 100}%`;
-        });
-    }, 16000);
-
-    // Incrementar necesidades de ejemplo
-    const closeAldeanos = aldeanos.filter(a => a !== aldeano && isNearby(a, aldeano));
-
-    if (closeAldeanos.length > 0) {
-        aldeano.necesidades.amor = Math.min(10, aldeano.necesidades.amor + 10);
-    }
-// Verificar cercanía con elementos de comida
-    const comidaElements = document.querySelectorAll('.triangulo.comida');
-    comidaElements.forEach(comida => {
-        if (isNearby(aldeano, comida)) {
-            aldeano.necesidades.hambre = Math.min(10, aldeano.necesidades.hambre + 10);
-            comida.remove(); // Eliminar el elemento de comida
-        }
-    });
-
-    // Verificar cercanía con elementos de agua
-    const aguaElements = document.querySelectorAll('.triangulo.agua');
-    aguaElements.forEach(agua => {
-        if (isNearby(aldeano, agua)) {
-            aldeano.necesidades.sed = Math.min(10, aldeano.necesidades.sed + 10);
-            agua.remove(); // Eliminar el elemento de agua
-        }
-    });
-
-
-    // Actualizar barras de progreso
-    const barras = aldeano.querySelectorAll('.barra');
-    barras.forEach((barra, index) => {
-        const key = Object.keys(aldeano.necesidades)[index];
-        barra.style.width = `${(aldeano.necesidades[key] / 10) * 100}%`;
-    });
-}
-
-function isNearby(a, b) {
-    const distance = Math.hypot(a.offsetLeft - b.offsetLeft, a.offsetTop - b.offsetTop);
-    return distance < 100; // Define la distancia mínima
+// Show success message for 3 seconds
+function showSuccessMessage() {
+    successMessage.style.display = 'block';
+    setTimeout(() => {
+        successMessage.style.display = 'none';
+    }, 2000);
 }
