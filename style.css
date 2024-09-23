@@ -1,0 +1,127 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.game-area {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: #1a1a2e; /* Fondo azul */
+    overflow: hidden;
+}
+
+.boton {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+#botonVerde {
+    background-color: green;
+}
+
+#botonRojo {
+    background-color: red;
+}
+
+#botonComida {
+    background-color: yellow;
+}
+
+#botonAgua {
+    background-color: skyblue;
+}
+
+#botonPiedra {
+    background-color: gray;
+}
+
+.aldeano {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    transition: transform 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.necesidades {
+    position: absolute;
+    width: 40px; /* Aumentar el tamaño de las barras */
+}
+
+.barra {
+    height: 5px;
+    border-radius: 2px;
+}
+
+.amor {
+    background-color: pink;
+}
+
+.hambre {
+    background-color: orange;
+}
+
+.sed {
+    background-color: lightblue;
+}
+
+.guerra {
+    background-color: lightcoral;
+}
+
+.triangulo {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.comida {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 30px solid yellow;
+}
+
+.agua {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 30px solid skyblue;
+}
+
+.piedra {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 30px solid gray;
+}
+
+/* Nuevos estilos para las barras alrededor del aldeano */
+.necesidades.amor {
+    top: -10px;
+    left: 0;
+    width: 100%;
+}
+
+.necesidades.hambre {
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+}
+
+.necesidades.sed {
+    left: -10px;
+    top: 0;
+    height: 100%;
+}
+
+.necesidades.guerra {
+    right: -10px;
+    top: 0;
+    height: 100%;
+}
