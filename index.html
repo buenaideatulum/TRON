@@ -14,7 +14,7 @@
             background-color: black;
             position: relative;
             overflow: hidden; 
-            animation: cambiarFondo 50s infinite alternate; 
+            animation: cambiarFondo 20s infinite alternate; 
         }
 
         @keyframes cambiarFondo {
@@ -73,11 +73,13 @@
         .firefly {
             width: 10px;
             height: 10px;
-            background-color: yellow;
+            background-color: #ffff00;
             border-radius: 50%;
             position: absolute;
+            box-shadow: 0 0 10px 1px #ffff00;
             transition: transform 0.5s ease-in-out;
-            cursor: pointer; 
+            cursor: pointer;
+            z-index: 10;
         }
 
         .wing {
@@ -112,10 +114,6 @@
     </style>
 </head>
 <body>
-    <audio id="backgroundMusic" loop>
-        <source src="luciernaga.mp3" type="audio/mpeg">
-        Tu navegador no soporta el elemento de audio.
-    </audio>
 
     <button id="openModalButton" style="display: none;">Agregar Mensaje</button>
 
@@ -202,11 +200,13 @@
         });
 
         async function cargarLuciernagas() {
-            const querySnapshot = await getDocs(collection(db, 'mensajes'));
-            querySnapshot.forEach((doc) => {
-                crearLuciernaga(doc.data().texto);
-            });
-        }
+    const querySnapshot = await getDocs(collection(db, 'mensajes'));
+    querySnapshot.forEach((doc) => {
+        // Generar dirección aleatoria: 1 para derecha, -1 para izquierda
+        const direccion = Math.random() < 0.5 ? 1 : -1;
+        crearLuciernaga(doc.data().texto, direccion);
+    });
+}
 
         function crearLuciernaga(mensaje) {
             const firefly = document.createElement('div');
